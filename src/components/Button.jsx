@@ -1,7 +1,7 @@
 function Button() {
   return (
-    <button onClick={() => alert("Button clicked!")}>
-      Click Me
+    <button onClick={() => alert("Movie added to watchlist!")}>
+      Add Movie
     </button>
   );
 }

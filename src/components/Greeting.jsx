@@ -1,5 +1,5 @@
 function Greeting() {
-  return <p>Hello! This is my first React application.</p>;
+  return <p>Welcome to your Movie Watchlist!</p>;
 }
 
 export default Greeting;
