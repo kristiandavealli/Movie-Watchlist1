@@ -3,20 +3,37 @@ function MovieCard({ movie, onToggleWatched, onDelete }) {
 
   return (
     <div className="movie-card">
-      <img src={poster} alt={title} />
+      <div className="movie-poster">
+        <img src={poster} alt={title} />
+      </div>
 
-      <h2>{title}</h2>
-      <p>{genre} - {year}</p>
-      <p>Rating: {rating}/10</p>
+      <div className="movie-info">
+        <h2>{title}</h2>
 
-      <div className="card-actions">
-        <button onClick={() => onToggleWatched(id)}>
-          {watched ? "Watched" : "Unwatched"}
-        </button>
+        <div className="movie-meta">
+          <span>{genre}</span>
+          <span>{year}</span>
+        </div>
 
-        <button onClick={() => onDelete(id)}>
-          Delete
-        </button>
+        <div className="movie-rating">
+          ⭐ {rating}/10
+        </div>
+
+        <div className="card-actions">
+          <button
+            className={watched ? "watched-btn" : "unwatched-btn"}
+            onClick={() => onToggleWatched(id)}
+          >
+            {watched ? "Watched" : "Unwatched"}
+          </button>
+
+          <button
+            className="delete-btn"
+            onClick={() => onDelete(id)}
+          >
+            Delete
+          </button>
+        </div>
       </div>
     </div>
   );

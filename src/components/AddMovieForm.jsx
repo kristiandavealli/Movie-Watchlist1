@@ -12,9 +12,9 @@ function AddMovieForm({ onAddMovie }) {
 
     onAddMovie({
       id: Date.now(),
-      title,
-      poster,
-      genre,
+      title: title.trim(),
+      poster: poster.trim(),
+      genre: genre.trim(),
       year: Number(year),
       rating: Number(rating),
       watched: false,
@@ -28,17 +28,17 @@ function AddMovieForm({ onAddMovie }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="add-movie-form" onSubmit={handleSubmit}>
       <input
         type="text"
-        placeholder="Movie title"
+        placeholder="Movie Title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         required
       />
 
       <input
-        type="text"
+        type="url"
         placeholder="Poster URL"
         value={poster}
         onChange={(e) => setPoster(e.target.value)}
@@ -58,6 +58,8 @@ function AddMovieForm({ onAddMovie }) {
         placeholder="Year"
         value={year}
         onChange={(e) => setYear(e.target.value)}
+        min="1888"
+        max="2100"
         required
       />
 
@@ -70,10 +72,10 @@ function AddMovieForm({ onAddMovie }) {
         min="1"
         max="10"
         value={rating}
-        onChange={(e) => setRating(e.target.value)}
+        onChange={(e) => setRating(Number(e.target.value))}
       />
 
-      <button type="submit" className="btn btn-primary">
+      <button type="submit">
         Add Movie
       </button>
     </form>
