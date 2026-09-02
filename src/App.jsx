@@ -13,12 +13,12 @@ import SearchBar from "./components/SearchBar";
 import SearchResults from "./components/SearchResults";
 
 function App() {
-  // Task 3: Restore filter from localStorage
+  // Restore filter from localStorage
   const [filter, setFilter] = useState(() => {
     return localStorage.getItem("filter") || "all";
   });
 
-  // Task 1: Restore movies from localStorage
+  // Restore movies from localStorage
   const [movies, setMovies] = useState(() => {
     const saved = localStorage.getItem("movies");
 
@@ -58,7 +58,7 @@ function App() {
         ];
   });
 
-  // NEW TMDB search state
+  // TMDB search state
   const [results, setResults] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -113,7 +113,7 @@ function App() {
     localStorage.setItem("filter", filter);
   }, [filter]);
 
-  // Toggle Watched
+  // Toggle watched
   const handleToggleWatched = (id) => {
     setMovies(
       movies.map((movie) =>
@@ -124,19 +124,18 @@ function App() {
     );
   };
 
-  // Delete Movie
+  // Delete movie
   const handleDeleteMovie = (id) => {
     setMovies(movies.filter((movie) => movie.id !== id));
   };
 
-  // Add Movie manually
+  // Add movie manually
   const handleAddMovie = (newMovie) => {
     setMovies([...movies, newMovie]);
   };
 
   // Add movie from TMDB search
   const handleAddFromSearch = (tmdbMovie) => {
-    // Avoid adding duplicates
     if (movies.some((movie) => movie.id === tmdbMovie.id)) {
       return;
     }
@@ -146,14 +145,14 @@ function App() {
     setMovies([...movies, watchlistMovie]);
   };
 
-  // Clear All
+  // Clear all movies
   const handleClearAll = () => {
     if (confirm("Clear your entire watchlist? This cannot be undone.")) {
       setMovies([]);
     }
   };
 
-  // Filter Movies
+  // Filter movies
   const visibleMovies = movies.filter((movie) => {
     if (filter === "watched") return movie.watched;
     if (filter === "unwatched") return !movie.watched;
@@ -164,6 +163,17 @@ function App() {
     <div className="container">
       <Header />
 
+      {/* NEW: TMDB Search */}
+      <SearchBar onSearch={setSearchTerm} />
+
+      <SearchResults
+        results={results}
+        onAdd={handleAddFromSearch}
+        isLoading={isLoading}
+        error={error}
+      />
+
+      {/* EXISTING: Personal Watchlist */}
       <SummaryBar movies={movies} />
 
       <button
@@ -176,18 +186,6 @@ function App() {
       <Greeting />
 
       <Button />
-
-      {/* TMDB Search */}
-      <SearchBar onSearch={setSearchTerm} />
-
-      {isLoading && <p>Loading...</p>}
-
-      {error && <p>{error}</p>}
-
-      <SearchResults
-        results={results}
-        onAdd={handleAddFromSearch}
-      />
 
       <AddMovieForm onAddMovie={handleAddMovie} />
 
