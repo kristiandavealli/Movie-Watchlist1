@@ -7,6 +7,7 @@ import MovieList from "./components/MovieList";
 import AddMovieForm from "./components/AddMovieForm";
 import FilterBar from "./components/FilterBar";
 import SummaryBar from "./components/SummaryBar";
+import TmdbSearch from "./components/TmdbSearch";
 
 function App() {
   // Task 3: Restore filter from localStorage
@@ -54,17 +55,17 @@ function App() {
         ];
   });
 
-  // Task 1: Save movies whenever they change
+  // Save movies whenever they change
   useEffect(() => {
     localStorage.setItem("movies", JSON.stringify(movies));
   }, [movies]);
 
-  // Task 2: Update browser tab title
+  // Update browser tab title
   useEffect(() => {
     document.title = `Movie Watchlist (${movies.length})`;
   }, [movies.length]);
 
-  // Task 3: Save filter whenever it changes
+  // Save filter whenever it changes
   useEffect(() => {
     localStorage.setItem("filter", filter);
   }, [filter]);
@@ -90,7 +91,7 @@ function App() {
     setMovies([...movies, newMovie]);
   };
 
-  // Task 4: Clear All
+  // Clear All
   const handleClearAll = () => {
     if (confirm("Clear your entire watchlist? This cannot be undone.")) {
       setMovies([]);
@@ -120,6 +121,9 @@ function App() {
       <Greeting />
 
       <Button />
+
+      {/* TMDB Search */}
+      <TmdbSearch onAddMovie={handleAddMovie} />
 
       <AddMovieForm onAddMovie={handleAddMovie} />
 
