@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { searchMovies, toWatchlistMovie } from "./api/tmdb";
+
 import Header from "./components/Header";
 import Greeting from "./components/Greeting";
 import Button from "./components/Button";
@@ -7,7 +9,8 @@ import MovieList from "./components/MovieList";
 import AddMovieForm from "./components/AddMovieForm";
 import FilterBar from "./components/FilterBar";
 import SummaryBar from "./components/SummaryBar";
-import TmdbSearch from "./components/TmdbSearch";
+import SearchBar from "./components/SearchBar";
+import SearchResults from "./components/SearchResults";
 
 function App() {
   // Task 3: Restore filter from localStorage
@@ -55,6 +58,46 @@ function App() {
         ];
   });
 
+  // NEW TMDB search state
+  const [results, setResults] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  // Fetch TMDB search results
+  useEffect(() => {
+    if (!searchTerm) return;
+
+    let isCancelled = false;
+
+    const fetchResults = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const movies = await searchMovies(searchTerm);
+
+        if (!isCancelled) {
+          setResults(movies);
+        }
+      } catch (err) {
+        if (!isCancelled) {
+          setError("Failed to fetch movies. Try again.");
+        }
+      } finally {
+        if (!isCancelled) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchResults();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [searchTerm]);
+
   // Save movies whenever they change
   useEffect(() => {
     localStorage.setItem("movies", JSON.stringify(movies));
@@ -86,9 +129,21 @@ function App() {
     setMovies(movies.filter((movie) => movie.id !== id));
   };
 
-  // Add Movie
+  // Add Movie manually
   const handleAddMovie = (newMovie) => {
     setMovies([...movies, newMovie]);
+  };
+
+  // Add movie from TMDB search
+  const handleAddFromSearch = (tmdbMovie) => {
+    // Avoid adding duplicates
+    if (movies.some((movie) => movie.id === tmdbMovie.id)) {
+      return;
+    }
+
+    const watchlistMovie = toWatchlistMovie(tmdbMovie);
+
+    setMovies([...movies, watchlistMovie]);
   };
 
   // Clear All
@@ -123,7 +178,16 @@ function App() {
       <Button />
 
       {/* TMDB Search */}
-      <TmdbSearch onAddMovie={handleAddMovie} />
+      <SearchBar onSearch={setSearchTerm} />
+
+      {isLoading && <p>Loading...</p>}
+
+      {error && <p>{error}</p>}
+
+      <SearchResults
+        results={results}
+        onAdd={handleAddFromSearch}
+      />
 
       <AddMovieForm onAddMovie={handleAddMovie} />
 
